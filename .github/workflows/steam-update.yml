@@ -5,9 +5,14 @@ on:
     - cron: '0 */6 * * *'
   workflow_dispatch:
 
+# Adiciona estas linhas para dar permissão de escrita ao token
+permissions:
+  contents: write
+
 jobs:
   update:
     runs-on: ubuntu-latest
+    # ... o resto do teu código continua igual daqui para baixo
 
     steps:
       - uses: actions/checkout@v4
