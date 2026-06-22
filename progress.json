@@ -1,3 +1,32 @@
 {
-  "games": []
+  "games": [
+    {
+      "appid": 319630,
+      "name": "Life is Strange™",
+      "achieved": 0,
+      "total": 60,
+      "percent": 0
+    },
+    {
+      "appid": 960910,
+      "name": "Heavy Rain",
+      "achieved": 51,
+      "total": 56,
+      "percent": 91.1
+    },
+    {
+      "appid": 960990,
+      "name": "Beyond: Two Souls",
+      "achieved": 2,
+      "total": 45,
+      "percent": 4.4
+    },
+    {
+      "appid": 3527290,
+      "name": "PEAK",
+      "achieved": 15,
+      "total": 54,
+      "percent": 27.8
+    }
+  ]
 }
