@@ -1,32 +1,30 @@
 name: Steam Progress Update
 
 on:
-schedule:
-- cron: '0 */6 * * *'
-workflow_dispatch:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
-update:
-runs-on: ubuntu-latest
+  update:
+    runs-on: ubuntu-latest
 
-```
-steps:
-  - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-  - uses: actions/setup-node@v4
-    with:
-      node-version: 20
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
 
-  - run: npm install axios
+      - run: npm install axios
 
-  - run: node update-steam.js
-    env:
-      STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+      - run: node update-steam.js
+        env:
+          STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
 
-  - run: |
-      git config user.name github-actions
-      git config user.email github-actions@github.com
-      git add progress.json
-      git commit -m "Atualização automática Steam" || exit 0
-      git push
-```
+      - run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add progress.json
+          git commit -m "Atualização automática Steam" || exit 0
+          git push
