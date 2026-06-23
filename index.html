@@ -88,8 +88,61 @@ footer{
 </style>
 </head>
 
+<script>
+
+fetch("progress.json")
+.then(response => response.json())
+.then(data => {
+
+    const container = document.getElementById("steam-progress");
+
+    data.games.forEach(game => {
+
+        container.innerHTML += `
+            <div class="card">
+
+                <div class="card-content">
+
+                    <div class="game-title">
+                        ${game.name}
+                    </div>
+
+                    <div class="platinum">
+                        ${game.achieved} / ${game.total}
+                    </div>
+
+                    <progress
+                        value="${game.achieved}"
+                        max="${game.total}"
+                        style="width:100%;margin-top:10px;">
+                    </progress>
+
+                    <p style="margin-top:10px;">
+                        ${game.percent}%
+                    </p>
+
+                </div>
+
+            </div>
+        `;
+
+    });
+
+});
+
+</script>
+    
 <body>
 
+<section>
+    <h2 style="text-align:center;margin-top:40px;">
+        🎯 Atualmente a Platinar
+    </h2>
+
+    <div id="steam-progress" class="games">
+    </div>
+</section>
+    
 <header>
     <h1>🏆 Jogos Platinados</h1>
     <p class="subtitle">A minha coleção de conquistas</p>
