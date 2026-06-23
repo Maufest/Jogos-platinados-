@@ -191,6 +191,12 @@ fetch("progress.json")
 
         container.innerHTML += `
             <div class="card">
+
+                <img
+                    src="https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/header.jpg"
+                    alt="${game.name}"
+                >
+
                 <div class="card-content">
                     <div class="game-title">
                         ${game.name}
