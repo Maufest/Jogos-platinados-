@@ -16,32 +16,51 @@ body{
     background:#0f172a;
     color:white;
     font-family:Arial, sans-serif;
+    top: 0 !important; /* Impede o Google de empurrar o site para baixo */
 }
+
+/* Esconde o widget feio e original do Google */
+#google_translate_element, .skiptranslate, .goog-te-banner-frame {
+    display: none !important;
+}
+body { top: 0px !important; }
 
 header{
     text-align:center;
     padding:50px 20px;
     background:linear-gradient(135deg,#111827,#1e3a8a);
-    position: relative; /* Necessário para posicionar o botão de tradução */
+    position: relative; /* Para alinhar os botões novos no topo */
 }
 
-/* Estilo para alinhar o botão do Google no topo direito */
-#google_translate_element {
+/* Contentor dos novos botões de idioma */
+.lang-switcher {
     position: absolute;
     top: 15px;
     right: 15px;
+    display: flex;
+    gap: 10px;
     z-index: 1000;
 }
 
-/* Ajuste simples para o widget do Google combinar melhor com o modo escuro */
-.goog-te-gadget-simple {
-    background-color: #1e293b !important;
-    border: 1px solid #334155 !important;
-    padding: 6px 10px !important;
-    border-radius: 8px !important;
+/* Design dos novos botões modernos */
+.lang-btn {
+    background: #1e293b;
+    color: white;
+    border: 1px solid #334155;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: 0.2s;
+    font-weight: bold;
 }
-.goog-te-gadget-simple span {
-    color: #fff !important;
+
+.lang-btn:hover {
+    background: #1e3a8a;
+    border-color: #3b82f6;
 }
 
 h1{
@@ -112,6 +131,12 @@ footer{
     
 <header>
     <div id="google_translate_element"></div>
+
+    <div class="lang-switcher">
+        <button class="lang-btn" onclick="translateTo('pt')">🇵🇹 PT</button>
+        <button class="lang-btn" onclick="translateTo('en')">🇬🇧 EN</button>
+        <button class="lang-btn" onclick="translateTo('es')">🇪🇸 ES</button>
+    </div>
 
     <h1>👋 Bem-vindo ao Site do Maufest25</h1>
 
@@ -202,55 +227,4 @@ footer{
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({
     pageLanguage: 'pt',
-    includedLanguages: 'en,es', 
     layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-  }, 'google_translate_element');
-}
-</script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
-<script>
-fetch("progress.json")
-.then(response => response.json())
-.then(data => {
-
-    const container = document.getElementById("steam-progress");
-
-    data.games.forEach(game => {
-
-        container.innerHTML += `
-            <div class="card">
-
-                <img
-                    src="https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/header.jpg"
-                    alt="${game.name}"
-                >
-
-                <div class="card-content">
-                    <div class="game-title">
-                        ${game.name}
-                    </div>
-
-                    <div class="platinum">
-                        ${game.achieved} / ${game.total}
-                    </div>
-
-                    <progress
-                        value="${game.achieved}"
-                        max="${game.total}"
-                        style="width:100%;margin-top:10px;">
-                    </progress>
-
-                    <p style="margin-top:10px;">
-                        ${game.percent}%
-                    </p>
-                </div>
-            </div>
-        `;
-    });
-
-});
-</script>
-
-</body>
-</html>
