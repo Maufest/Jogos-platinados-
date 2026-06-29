@@ -16,15 +16,22 @@ body{
     background:#0f172a;
     color:white;
     font-family:Arial, sans-serif;
-    top: 0 !important;
 }
 
-/* Força o widget original e barras do Google a desaparecerem por completo */
-#google_translate_element, .skiptranslate, .goog-te-banner-frame, #goog-gt-tt {
+/* Deixamos o div original do Google visível com tamanho zero para não dar erro */
+#google_translate_element {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    opacity: 0;
+}
+
+/* Remove a barra cinzenta que o Google mete no topo */
+.skiptranslate, .goog-te-banner-frame, #goog-gt-tt {
     display: none !important;
 }
 body { top: 0px !important; }
-.goog-text-highlight { background: none !important; box-shadow: none !important; }
 
 header{
     text-align:center;
@@ -139,13 +146,13 @@ footer{
     <div id="google_translate_element"></div>
 
     <div class="lang-switcher">
-        <button class="lang-btn" onclick="translateTo('pt')">
+        <button class="lang-btn" onclick="doGTranslate('pt|pt')">
             <img src="https://flagcdn.com/w40/pt.png" alt="Portugal"> PT
         </button>
-        <button class="lang-btn" onclick="translateTo('en')">
+        <button class="lang-btn" onclick="doGTranslate('pt|en')">
             <img src="https://flagcdn.com/w40/gb.png" alt="United Kingdom"> EN
         </button>
-        <button class="lang-btn" onclick="translateTo('es')">
+        <button class="lang-btn" onclick="doGTranslate('pt|es')">
             <img src="https://flagcdn.com/w40/es.png" alt="Spain"> ES
         </button>
     </div>
@@ -239,35 +246,18 @@ footer{
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({
     pageLanguage: 'pt',
-    includedLanguages: 'en,es,pt',
     layout: google.translate.TranslateElement.InlineLayout.SIMPLE
   }, 'google_translate_element');
 }
 
-function translateTo(langCode) {
-    // Tenta encontrar o seletor de idiomas do Google dentro do widget escondido
-    var select = document.querySelector('.goog-te-combo');
-    
-    if (select) {
-        select.value = langCode;
-        // Dispara ambos os eventos para garantir que o script do Google acorda
-        select.dispatchEvent(new Event('change', { bubbles: true }));
-        
-        // Se for para voltar ao Português original, limpamos o cookie ou restauramos o estado original do iframe
-        if(langCode === 'pt') {
-            var iframe = document.querySelector('.goog-te-banner-frame');
-            if(iframe) {
-                var document = iframe.contentWindow.document;
-                var restoreBtn = document.getElementById(':1.restore');
-                if(restoreBtn) restoreBtn.click();
-            } else {
-                // Alternativa caso o iframe mude: recarrega a página limpa
-                location.reload();
-            }
-        }
-    } else {
-        // Se o utilizador clicou muito rápido antes do Google carregar, tenta novamente em 200ms
-        setTimeout(function() { translateTo(langCode); }, 200);
+function doGTranslate(lang_pair) {
+    if (lang_pair.value) lang_pair = lang_pair.value;
+    if (lang_pair == '') return;
+    var lang = lang_pair.split('|')[1];
+    var teCombo = document.querySelector('.goog-te-combo');
+    if (teCombo) {
+        teCombo.value = lang;
+        teCombo.dispatchEvent(new Event('change', { bubbles: true }));
     }
 }
 </script>
