@@ -18,21 +18,6 @@ body{
     font-family:Arial, sans-serif;
 }
 
-/* Deixamos o div original do Google visível com tamanho zero para não dar erro */
-#google_translate_element {
-    position: absolute;
-    width: 0;
-    height: 0;
-    overflow: hidden;
-    opacity: 0;
-}
-
-/* Remove a barra cinzenta que o Google mete no topo */
-.skiptranslate, .goog-te-banner-frame, #goog-gt-tt {
-    display: none !important;
-}
-body { top: 0px !important; }
-
 header{
     text-align:center;
     padding:50px 20px;
@@ -71,7 +56,7 @@ header{
     border-radius: 2px;
 }
 
-.lang-btn:hover {
+.lang-btn:hover, .lang-btn.active {
     background: #1e3a8a;
     border-color: #3b82f6;
 }
@@ -143,49 +128,41 @@ footer{
 <body>
     
 <header>
-    <div id="google_translate_element"></div>
-
     <div class="lang-switcher">
-        <button class="lang-btn" onclick="doGTranslate('pt|pt')">
+        <button class="lang-btn active" onclick="changeLanguage('pt')">
             <img src="https://flagcdn.com/w40/pt.png" alt="Portugal"> PT
         </button>
-        <button class="lang-btn" onclick="doGTranslate('pt|en')">
+        <button class="lang-btn" onclick="changeLanguage('en')">
             <img src="https://flagcdn.com/w40/gb.png" alt="United Kingdom"> EN
         </button>
-        <button class="lang-btn" onclick="doGTranslate('pt|es')">
+        <button class="lang-btn" onclick="changeLanguage('es')">
             <img src="https://flagcdn.com/w40/es.png" alt="Spain"> ES
         </button>
     </div>
 
-    <h1>👋 Bem-vindo ao Site do Maufest25</h1>
+    <h1 data-i18n="welcome">👋 Bem-vindo ao Site do Maufest25</h1>
 
-    <p class="subtitle">
+    <p class="subtitle" data-i18n="subtitle">
         Lives na Twitch • Platinas • Conquistas Steam
     </p>
 
     <div class="stats">
-        🏆 Platinas Totais: <strong>2</strong>
+        <span data-i18n="total-platinums">🏆 Platinas Totais:</span> <strong>2</strong>
     </div>
 </header>
 
 <section style="max-width:1200px;margin:40px auto;padding:0 20px;">
-    <h2 style="margin-bottom:15px;">🔴 Live Twitch</h2>
+    <h2 style="margin-bottom:15px;" data-i18n="live-twitch">🔴 Live Twitch</h2>
 
     <iframe
         src="https://player.twitch.tv/?channel=maufest25&parent=maufest.github.io"
         height="500"
         width="100%"
         allowfullscreen>
-    Platform: Twitch </iframe>
-
-    <div style="margin-top:15px;">
-        <a href="https://www.twitch.tv/maufest25" target="_blank">
-        </a>
-    </div>
+    </iframe>
 </section>
 
 <section class="games">
-
     <a href="https://store.steampowered.com/app/1968730/Bounty_of_One/" target="_blank" style="text-decoration:none;color:white;">
         <div class="card">
             <img src="imagens/bounty.png" alt="Bounty of One">
@@ -203,11 +180,10 @@ footer{
             </div>
         </div>
     </a>
-
 </section>
 
 <section>
-    <h2 style="text-align:center;margin-top:40px;">
+    <h2 style="text-align:center;margin-top:40px;" data-i18n="currently-platinum">
         🎯 Atualmente a Platinar
     </h2>
 
@@ -216,54 +192,76 @@ footer{
 </section>
 
 <section style="text-align:center;padding:40px 20px;">
-    <h2>🌐 Redes Sociais</h2>
+    <h2 data-i18n="social-media">🌐 Redes Sociais</h2>
 
     <div style="margin-top:20px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap;">
-
         <a href="https://discord.gg/ErSSvbGZuC" target="_blank"
            style="text-decoration:none;padding:12px 20px;background:#5865F2;color:white;border-radius:8px;">
             💬 Discord
         </a>
-
         <a href="https://www.tiktok.com/@maufest" target="_blank"
            style="text-decoration:none;padding:12px 20px;background:#111;color:white;border-radius:8px;">
             🎵 TikTok
         </a>
-
         <a href="https://www.twitch.tv/maufest25" target="_blank"
            style="text-decoration:none;padding:12px 20px;background:#9146FF;color:white;border-radius:8px;">
             💜 Twitch
         </a>
-
     </div>
 </section>
     
-<footer>
+<footer data-i18n="footer">
     Twitch • Jogos Platinados Tracker
 </footer>
 
-<script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    pageLanguage: 'pt',
-    layout: google.translate.TranslateElement.InlineLayout.SIMPLE
-  }, 'google_translate_element');
-}
-
-function doGTranslate(lang_pair) {
-    if (lang_pair.value) lang_pair = lang_pair.value;
-    if (lang_pair == '') return;
-    var lang = lang_pair.split('|')[1];
-    var teCombo = document.querySelector('.goog-te-combo');
-    if (teCombo) {
-        teCombo.value = lang;
-        teCombo.dispatchEvent(new Event('change', { bubbles: true }));
-    }
-}
-</script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
 <script>
+// Base de dados de traduções interna (rápida e leve)
+const translations = {
+    pt: {
+        welcome: "👋 Bem-vindo ao Site do Maufest25",
+        subtitle: "Lives na Twitch • Platinas • Conquistas Steam",
+        "total-platinums": "🏆 Platinas Totais:",
+        "live-twitch": "🔴 Live Twitch",
+        "currently-platinum": "🎯 Atualmente a Platinar",
+        "social-media": "🌐 Redes Sociais",
+        footer: "Twitch • Jogos Platinados Tracker"
+    },
+    en: {
+        welcome: "👋 Welcome to Maufest25's Website",
+        subtitle: "Twitch Streams • Platinums • Steam Achievements",
+        "total-platinums": "🏆 Total Platinums:",
+        "live-twitch": "🔴 Twitch Live Stream",
+        "currently-platinum": "🎯 Currently Grinding Platinums",
+        "social-media": "🌐 Social Media",
+        footer: "Twitch • Platinum Games Tracker"
+    },
+    es: {
+        welcome: "👋 Bienvenido a la Web de Maufest25",
+        subtitle: "Directos en Twitch • Platinos • Logros de Steam",
+        "total-platinums": "🏆 Platinos Totales:",
+        "live-twitch": "🔴 En Directo en Twitch",
+        "currently-platinum": "🎯 Actualmente Platinando",
+        "social-media": "🌐 Redes Sociales",
+        footer: "Twitch • Rastreador de Juegos Platinados"
+    }
+};
+
+// Função para mudar o idioma da página
+function changeLanguage(lang) {
+    // Atualiza o texto dos elementos estáticos
+    document.querySelectorAll('[data-i18n]').forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        if (translations[lang] && translations[lang][key]) {
+            element.textContent = translations[lang][key];
+        }
+    });
+
+    // Atualiza o estado visual do botão ativo
+    document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+}
+
+// Carregar progresso da Steam
 fetch("progress.json")
 .then(response => response.json())
 .then(data => {
