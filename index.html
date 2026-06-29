@@ -16,23 +16,23 @@ body{
     background:#0f172a;
     color:white;
     font-family:Arial, sans-serif;
-    top: 0 !important; /* Impede o Google de empurrar o site para baixo */
+    top: 0 !important;
 }
 
-/* Esconde o widget feio e original do Google */
-#google_translate_element, .skiptranslate, .goog-te-banner-frame {
+/* Força o widget original e barras do Google a desaparecerem por completo */
+#google_translate_element, .skiptranslate, .goog-te-banner-frame, #goog-gt-tt {
     display: none !important;
 }
 body { top: 0px !important; }
+.goog-text-highlight { background: none !important; box-shadow: none !important; }
 
 header{
     text-align:center;
     padding:50px 20px;
     background:linear-gradient(135deg,#111827,#1e3a8a);
-    position: relative; /* Para alinhar os botões novos no topo */
+    position: relative;
 }
 
-/* Contentor dos novos botões de idioma */
 .lang-switcher {
     position: absolute;
     top: 15px;
@@ -42,7 +42,6 @@ header{
     z-index: 1000;
 }
 
-/* Design dos novos botões modernos */
 .lang-btn {
     background: #1e293b;
     color: white;
@@ -53,17 +52,16 @@ header{
     font-size: 0.9rem;
     display: flex;
     align-items: center;
-    gap: 8px; /* Espaço entre a bandeira e o texto */
+    gap: 8px;
     transition: 0.2s;
     font-weight: bold;
 }
 
-/* Tamanho fixo para as imagens das bandeiras */
 .lang-btn img {
     width: 20px;
     height: auto;
     display: block;
-    border-radius: 2px; /* Cantos ligeiramente arredondados na bandeira */
+    border-radius: 2px;
 }
 
 .lang-btn:hover {
@@ -241,18 +239,35 @@ footer{
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({
     pageLanguage: 'pt',
+    includedLanguages: 'en,es,pt',
     layout: google.translate.TranslateElement.InlineLayout.SIMPLE
   }, 'google_translate_element');
 }
 
-// Controla a tradução através dos novos botões
 function translateTo(langCode) {
+    // Tenta encontrar o seletor de idiomas do Google dentro do widget escondido
     var select = document.querySelector('.goog-te-combo');
+    
     if (select) {
         select.value = langCode;
-        select.dispatchEvent(new Event('change'));
+        // Dispara ambos os eventos para garantir que o script do Google acorda
+        select.dispatchEvent(new Event('change', { bubbles: true }));
+        
+        // Se for para voltar ao Português original, limpamos o cookie ou restauramos o estado original do iframe
+        if(langCode === 'pt') {
+            var iframe = document.querySelector('.goog-te-banner-frame');
+            if(iframe) {
+                var document = iframe.contentWindow.document;
+                var restoreBtn = document.getElementById(':1.restore');
+                if(restoreBtn) restoreBtn.click();
+            } else {
+                // Alternativa caso o iframe mude: recarrega a página limpa
+                location.reload();
+            }
+        }
     } else {
-        setTimeout(function() { translateTo(langCode); }, 300);
+        // Se o utilizador clicou muito rápido antes do Google carregar, tenta novamente em 200ms
+        setTimeout(function() { translateTo(langCode); }, 200);
     }
 }
 </script>
@@ -262,42 +277,20 @@ function translateTo(langCode) {
 fetch("progress.json")
 .then(response => response.json())
 .then(data => {
-
     const container = document.getElementById("steam-progress");
-
     data.games.forEach(game => {
-
         container.innerHTML += `
             <div class="card">
-
-                <img
-                    src="https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/header.jpg"
-                    alt="${game.name}"
-                >
-
+                <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/${game.appid}/header.jpg" alt="${game.name}">
                 <div class="card-content">
-                    <div class="game-title">
-                        ${game.name}
-                    </div>
-
-                    <div class="platinum">
-                        ${game.achieved} / ${game.total}
-                    </div>
-
-                    <progress
-                        value="${game.achieved}"
-                        max="${game.total}"
-                        style="width:100%;margin-top:10px;">
-                    </progress>
-
-                    <p style="margin-top:10px;">
-                        ${game.percent}%
-                    </p>
+                    <div class="game-title">${game.name}</div>
+                    <div class="platinum">${game.achieved} / ${game.total}</div>
+                    <progress value="${game.achieved}" max="${game.total}" style="width:100%;margin-top:10px;"></progress>
+                    <p style="margin-top:10px;">${game.percent}%</p>
                 </div>
             </div>
         `;
     });
-
 });
 </script>
 
